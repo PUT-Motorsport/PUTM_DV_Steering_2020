@@ -12,14 +12,14 @@ class CANSender:
         self.channel = 'vcan0'
         self.bus = can.interface.Bus(channel=self.channel,
                                      bustype=self.bustype)
-        self.apps_msg = can.Message(arbitration_id=0x0A, extended_id=False,
+        self.apps_msg = can.Message(arbitration_id=0x210, extended_id=False,
                                     is_remote_frame=False,
                                     is_error_frame=False,
-                                    data=[0, 0])
+                                    data=[0x31, 0x0, 0x0])
         rospy.Subscriber('apps_topic', String, self.callback)
 
     def set_msg(self, apps):
-        self.apps_msg = can.Message(arbitration_id=0x0A, extended_id=False,
+        self.apps_msg = can.Message(arbitration_id=0x210, extended_id=False,
                                     is_remote_frame=False,
                                     is_error_frame=False,
                                     data=apps)
@@ -39,7 +39,7 @@ class CANSender:
         high_byte = apps_int >> 8
         print('low_byte:', low_byte)
         print('high_byte:', high_byte)
-        self.set_msg([high_byte, low_byte])
+        self.set_msg([0x31, high_byte, low_byte])
 
 
 if __name__ == '__main__':
