@@ -39,7 +39,7 @@ class CANSender:
         high_byte = apps_int >> 8
         print('low_byte:', low_byte)
         print('high_byte:', high_byte)
-        self.set_msg([0x31, high_byte, low_byte])
+        self.set_msg([0x31, low_byte, high_byte])
 
 
 if __name__ == '__main__':
