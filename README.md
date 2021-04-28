@@ -1,33 +1,36 @@
 # CAN Inverter Communication
 
-Package provides ROS <- CAN -> Inverter communication (both ways)
-
+Package provides ROS <-> CAN <-> Inverter communication (both ways).
 
 ## Requirements
-- Ubuntu 20.04
-- ROS Noetic
+
+- Ubuntu 20.04 / 18.04
+- ROS Noetic / ROS Melodic
 - DV Workspace (from DV recruitment task)
 
 
 ## Nodes description
-- ros_publisher - node takes user input and publish it to topic apps_topic
-- CAN_publisher - node responsible for communication ROS -> Inverter
-- CAN_reciver - node responsible for communication CAN -> ROS 
-- Inv_Data_Reciver - node used for testing data from CAN_reciver node 
 
-![](CanApps.png)
+- apps_publisher - node responsible for simulating APPS data
+- can_sender - node responsible for communication ROS -> Inverter (changing ROS msg to CAN msg)
+- inverter - node used for simulating inverter and testing data receiving via CAN bus 
 
 ## Installation
 
-
-
 ```bash
 cd ~/dv_ws/src
-git https://github.com/GrzegorzCzput/CAN_Inverter_Communication.git CAN_apps/
+git https://github.com/PUT-Motorsport/PUTM_DV_Steering_2020.git -b inverter-steering can_apps/
 ```
 
 ## Usage
-### Import can library and create a virtual CAN
+
+### Install [python-can](https://pypi.org/project/python-can/) package
+
+```bash
+pip install python-can
+```
+
+### Create a virtual CAN bus
 
 ```bash
 modprobe can_dev
@@ -37,23 +40,27 @@ sudo ip link add dev vcan0 type vcan
 sudo ip link set up vcan0
 ```
 
+### Create a CAN bus
+
+**TODO**
+
 ### Give permissions to execute
-for example
-``` bash 
-chmod +x CAN_reciver.py
+
+```bash
+chmod +x src/*.py
 ```
 
-### Build workspace
+### ROS use case
+
 ```bash
 cd ~/dv_ws
+
+# build workspace
 catkin_make
-source devel/setup.bash
-roscore
-```
 
-### Run node (another terminal)
-```bash
-cd ~/dv_ws
+# source workspace
 source devel/setup.bash
-rosrun CAN_apps CAN_publisher.py 
+
+# run launch file
+roslaunch can_apps inverter_communication.launch
 ```

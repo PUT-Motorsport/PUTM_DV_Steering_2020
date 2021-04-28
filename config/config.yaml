@@ -1,0 +1,4 @@
+can:
+  bustype: 'socketcan'
+  channel: 'vcan0' # available: slcan0 - real CAN bus, vcan0 - virtual CAN bus
+  arbitration_id: 0x210
