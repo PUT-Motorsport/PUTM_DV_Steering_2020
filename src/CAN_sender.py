@@ -11,6 +11,7 @@ class CANSender:
         self.bustype = rp.get_param('/can/bustype')
         self.channel = rp.get_param('/can/channel')
         self.arbitration_id = rp.get_param('/can/arbitration_id')
+        self.regid = rp.get_param('/can/regid')
 
         self.bus = can.interface.Bus(channel=self.channel,
                                      bustype=self.bustype)
@@ -49,11 +50,14 @@ class CANSender:
 
         rp.loginfo('CAN sender low byte: {}, high byte: {}'.format(low_byte, high_byte))
 
-        self.set_msg([0x31, low_byte, high_byte])
+        self.set_msg([self.regid, low_byte, high_byte])
 
 
 if __name__ == '__main__':
     rp.init_node('can_sender', log_level=rp.DEBUG)
+
+    rp.sleep(10)
+    rp.loginfo('CAN sender starting...')
 
     CS = CANSender()
     CS.can_send()

@@ -21,7 +21,10 @@ class APPS:
 if __name__ == '__main__':
     rp.init_node('apps_publisher', log_level=rp.DEBUG)
 
-    apps_msgs = [0, 32766]
+    rp.sleep(15)
+    rp.loginfo('APPS publisher starting...')
+
+    apps_msgs = [0, 1100]
     msg_id = 0
 
     A = APPS()
