@@ -1,6 +1,6 @@
 can:
   bustype: 'socketcan'
-  channel: 'slcan0' # available: slcan0 - real CAN bus, vcan0 - virtual CAN bus
+  channel: 'vcan0' # available: slcan0 - real CAN bus, vcan0 - virtual CAN bus
   arbitration_id: 0x201
   regid: 0x90 # available: speed 0x31, torque 0x90
   

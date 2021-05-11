@@ -1,6 +1,6 @@
 # CAN Inverter Communication
 
-Package provides ROS <-> CAN <-> Inverter communication (both ways).
+Package provides ROS <-> CAN <-> Inverter communication (both ways). Currently set up to communicate with can_translator.
 
 ## Requirements
 
@@ -19,7 +19,7 @@ Package provides ROS <-> CAN <-> Inverter communication (both ways).
 
 ```bash
 cd ~/dv_ws/src
-git https://github.com/PUT-Motorsport/PUTM_DV_Steering_2020.git -b inverter-steering can_apps/
+git clone https://github.com/PUT-Motorsport/PUTM_DV_Steering_2020.git -b feature/inverter-steering-class-approach
 ```
 
 ## Usage
@@ -33,9 +33,9 @@ pip install python-can
 ### Create a virtual CAN bus
 
 ```bash
-modprobe can_dev
-modprobe can_raw
-modprobe vcan
+sudo modprobe can_dev
+sudo modprobe can_raw
+sudo modprobe vcan
 sudo ip link add dev vcan0 type vcan
 sudo ip link set up vcan0
 ```
