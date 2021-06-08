@@ -1,6 +1,10 @@
 # CAN Inverter Communication
 
-Package provides ROS <-> CAN <-> Inverter communication (both ways). Currently set up to communicate with can_translator.
+
+Package provides ROS <- CAN -> Inverter communication (both ways)
+And can be used to measure "speed set time"
+
+
 
 ## Requirements
 
@@ -11,6 +15,12 @@ Package provides ROS <-> CAN <-> Inverter communication (both ways). Currently s
 
 ## Nodes description
 
+- APPS_publisher - publishes mes to CAN_sender and calculates speed set time
+- CAN_sender - node responsible for communication ROS -> Inverter
+- INVERTER - simulates Inverter
+- TIMER - receives mes from INVERTER and sends timestamps to APPS_publisher
+
+
 - apps_publisher - node responsible for simulating APPS data
 - can_sender - node responsible for communication ROS -> Inverter (changing ROS msg to CAN msg)
 - inverter - node used for simulating inverter and testing data receiving via CAN bus 
@@ -19,7 +29,9 @@ Package provides ROS <-> CAN <-> Inverter communication (both ways). Currently s
 
 ```bash
 cd ~/dv_ws/src
+
 git clone https://github.com/PUT-Motorsport/PUTM_DV_Steering_2020.git -b feature/inverter-steering-class-approach
+
 ```
 
 ## Usage
@@ -60,7 +72,5 @@ catkin_make
 
 # source workspace
 source devel/setup.bash
-
-# run launch file
-roslaunch can_apps inverter_communication.launch
+rosun CAN_apps APPS_publisher.py 
 ```
