@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<launch>
+    <rosparam command="load" file="$(find can_apps)/config/config.yaml" />
+
+    <node name="inverter" pkg="can_apps" type="inverter.py" output="screen" />
+
+    <node name="can_sender" pkg="can_apps" type="CAN_sender.py" output="screen" />
+
+    <node name="apps_publisher" pkg="can_apps" type="apps_publisher.py" output="screen" />
+
+</launch>
