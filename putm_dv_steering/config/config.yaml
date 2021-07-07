@@ -1,0 +1,6 @@
+# Autonomous system constatns
+vehicle:
+  max_throttle: 0.5 # m/s^2
+  target_speed: 6 # m/s
+  max_steering: 0.55
+

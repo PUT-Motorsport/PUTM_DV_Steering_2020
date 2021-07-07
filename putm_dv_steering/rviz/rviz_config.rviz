@@ -104,9 +104,9 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 77.25838470458984
+      Max Intensity: 81.49324798583984
       Min Color: 0; 0; 0
-      Min Intensity: 1.4537863731384277
+      Min Intensity: 2.43513822555542
       Name: PointCloud2
       Position Transformer: XYZ
       Queue Size: 10
@@ -154,6 +154,14 @@ Visualization Manager:
       Queue Size: 2
       Transport Hint: raw
       Unreliable: false
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /putm/steering/state_lattices_path
+      Name: MarkerArray
+      Namespaces:
+        "": true
+      Queue Size: 100
       Value: true
   Enabled: true
   Global Options:

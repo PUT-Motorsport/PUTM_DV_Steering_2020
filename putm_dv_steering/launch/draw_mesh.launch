@@ -4,4 +4,5 @@
     <node type="draw_mesh.py" name="draw_mesh" pkg="putm_dv_steering" output="screen" />
     <node type="state_lattices.py" name="state_lattices" pkg="putm_dv_steering" output="screen" />
     <node type="rviz" name="rviz" pkg="rviz" args="-d $(find putm_dv_steering)/rviz/rviz_config.rviz" />
+    <node type="steering.py" name="steering" pkg="putm_dv_steering" output="screen" />
 </launch>

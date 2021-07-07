@@ -10,21 +10,23 @@ from std_msgs.msg import Header, ColorRGBA
 from math import pi
 from a_star_search import *
 
+
 class State_L:
     def __init__(self):
         self.sub_poly = rospy.Subscriber('/putm/steering/poly_markers', MarkerArray, self.get_polynomial)
+        self.pub_lattices = rospy.Publisher('/putm/steering/state_lattices_path', MarkerArray, queue_size=10)
         self.polynomial = MarkerArray()
         self.epochs = 4
         self.step = 1
+        self.num_steps = 0
         self.angle_lattices = [-pi/3, -pi/4, -pi/6, 0, pi/6, pi/4, pi/3]
         self.start_point = (0, 0)
         self.end_point = self.start_point
         self.parent_nodes = [self.start_point]
         self.graph_connections = []
         self.heuristics = {}
-        self.graph = Graph()
         self.path_points = [self.start_point]
-        self.steering_path = []
+        self.steering_graph, self.steering_list = [], []
 
     def get_polynomial(self, message):
         self.polynomial = message
@@ -38,15 +40,30 @@ class State_L:
         if self.path_points == []:
             self.path_points = self.previous_points
 
-        self.create_lattices()
+        # reset values for another graph connections
+        self.graph = Graph()
+        self.graph_connections = []
+        self.heuristics = {}
+        self.parent_nodes = [self.start_point]
+        self.num_steps = 0
         self.end_point = self.path_points[-1]
+
+
+        self.create_lattices()
         self.add_endpoint_to_graph()
         self.create_graph_to_search()
-        self.create_heuristics()
+
+        self.heuristics = self.create_heuristics()
         self.search_graph()
 
+        self.convert_graph_to_points()
+        lattices_array = self.draw_lattices(self.steering_list)
+        self.pub_lattices.publish(lattices_array)
+
+
     def create_lattices(self):
-        while len(self.parent_nodes) < pow(len(self.angle_lattices), self.epochs):
+        while (len(self.parent_nodes) < pow(len(self.angle_lattices), self.epochs)) and (self.num_steps < self.end_point[0]-1):
+            self.num_steps += self.step
             new_nodes = []
             for parent_node in self.parent_nodes:
                 for angle in self.angle_lattices:
@@ -57,6 +74,7 @@ class State_L:
                     distance = self.calculate_distance(parent_node, new_node)
                     new_connection = (parent_node, new_node, distance)
                     self.graph_connections.append(new_connection)
+
             self.parent_nodes = new_nodes
 
     def calculate_distance(self, parent_node, new_node):
@@ -73,25 +91,45 @@ class State_L:
             self.graph_connections.append((leaf, self.end_point, distance))
 
     def create_heuristics(self):
+        heuristic = {}
         nodes = list(set([node[0] for node in self.graph_connections]))
         for node in nodes:
             current_point = self.path_points[-1]
-            #for path_point in self.path_points[::-1]:
-            #    if node[0] <= path_point[0]:
-            #        current_point = path_point
-            #    else:
-            #        distance = self.calculate_distance(node, current_point)
-            #        self.heuristics[str(node)] = distance
-            distance = self.calculate_distance(node, current_point)
-            self.heuristics[str(node)] = distance
-            #print(distance)
-        # add endpoint with value 0
-        self.heuristics[str(self.end_point)] = 0
+            for path_point in self.path_points[::-1]:
+                if node[0] <= path_point[0]:
+                    current_point = path_point
+                else:
+                    distance = self.calculate_distance(node, current_point)
+                    heuristic[str(node)] = distance
+        # add heuristic for the  endpoint
+        heuristic[str(self.end_point)] = 0
+        return heuristic
 
     def search_graph(self):
-        self.steering_path = astar_search(self.graph, self.heuristics, str(self.start_point), str(self.end_point))
-        print(self.steering_path)
-        
+        self.steering_graph = astar_search(self.graph, self.heuristics, str(self.start_point), str(self.end_point))
+
+    def convert_graph_to_points(self):
+        self.steering_list = []
+        for node in self.steering_graph:
+            point = node.split(':')[0]
+            self.steering_list.append(point)
+        print(self.steering_list)
+
+    def draw_lattices(self, points):
+        markers_arr = MarkerArray()
+        markers_arr.markers = []
+        for index, point in enumerate(points):
+                point = eval(point)
+                marker = Marker()
+                marker.type=Marker.SPHERE
+                marker.id=index
+                marker.lifetime=rospy.Duration(0.1)
+                marker.pose=Pose(Point(point[0], point[1], 0), Quaternion(0, 0, 0, 1))
+                marker.scale=Vector3(0.1, 0.1, 0.1)
+                marker.header=Header(frame_id='fsds/cam1')
+                marker.color=ColorRGBA(1.0, 0.0, 0.0, 0.8)
+                markers_arr.markers.append(marker)
+        return markers_arr
 
 if __name__ == '__main__':
     rospy.init_node('state_lattices')
