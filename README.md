@@ -10,7 +10,7 @@ The program uses two models for simulations:
 0. Clone repository
 
 ```bash
-git clone 
+git clone --branch lateral_control https://github.com/PUT-Motorsport/PUTM_DV_Steering_2020.git
 cd lateral_control
 ```
 
